@@ -5,5 +5,5 @@ def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
 def verify_master_password(entered_pass: str, stored_hash: str) -> bool:
-    hashed_input = hashlib.sha256(entered_pass)
-    return entered_pass == stored_hash
+    hashed_input = hash_password(entered_pass)
+    return hashed_input == stored_hash

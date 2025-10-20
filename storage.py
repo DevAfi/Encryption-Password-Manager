@@ -8,8 +8,10 @@ def save_master_password_hash(pass_hash: str):
         json.dump(config, f)
 
 def load_master_password_hash() -> str:
-    if os.path.exists('config.json'):
+    """Load the master password hash from config"""
+    try:
         with open('config.json', 'r') as f:
             config = json.load(f)
             return config.get('master_password_hash', '')
-    return ''
+    except (FileNotFoundError, json.JSONDecodeError):
+        return ''
