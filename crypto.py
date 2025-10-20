@@ -25,3 +25,14 @@ def generatekey(master_pass: str) -> bytes:
     )
     key=base64.urlsafe_b64encode(kdf.derive(master_pass.encode()))
     return key
+
+def encrypt_pass(norm_pass: str, master_pass: str) -> str:
+    key = generatekey(master_pass)
+    fernet = Fernet(key)
+    encrypted = fernet.encrypt(norm_pass.encode())
+    return encrypted.decode() #to store in json
+def decrypt_pass(enc_pass: str, master_pass: str) -> str:
+    key = generatekey(master_pass)
+    fernet = Fernet(key)
+    decrypted = fernet.decrypt(enc_pass.encode())
+    return decrypted.decode() 
