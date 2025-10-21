@@ -18,10 +18,13 @@ This repo also includes a roadmap for growing into a fuller CLI with generation,
 - **hashlib/PBKDF2**: master password hashing/derivation
 - Optional: **pyperclip** for clipboard copy, **argparse/click** for CLI UX
 
-### Current Status (MVP)
-- Project scaffolded with core modules.
-- Master password hashing and config storage in progress.
-- CLI commands will follow the usage below as they land.
+### Current Status (MVP) ✅ COMPLETED
+- ✅ Master password authentication with secure hashing
+- ✅ Add new password entries with encryption
+- ✅ Retrieve/view passwords with decryption
+- ✅ Local JSON storage with encrypted data
+- ✅ Interactive CLI menu system
+- ✅ Secure password input using getpass
 
 ### Project Structure
 ```text
@@ -69,61 +72,47 @@ pip install cryptography pyperclip
 ```
 
 ### Usage
-Run commands from the project root. Examples assume:
+Run the password manager from the project root:
 ```bash
-python main.py <command> [options]
+python main.py
 ```
 
-#### Initialize vault and set master password
-```bash
-python main.py init
-```
-- Prompts securely for a master password.
-- Stores a hash/KDF parameters in `config.json`.
-- Creates an empty `data.json` if missing.
+#### First Time Setup
+- The application will automatically detect if no master password exists
+- You'll be prompted to create a master password (minimum 8 characters)
+- Password is securely hashed and stored in `config.json`
 
-#### Add a new password entry
-```bash
-python main.py add --service github --username yourname
-# will prompt securely for the password (or generate in future phases)
-```
-- Encrypts and stores the entry in `data.json`.
+#### Main Menu Options
+1. **Add a new password** - Store encrypted credentials for any service
+2. **Retrieve a password** - View stored passwords by selecting from a list
+3. **Exit** - Close the application
 
-#### Retrieve/view a password
-```bash
-python main.py get --service github
-# prompts for master password, then prints or offers to copy to clipboard
-```
-
-#### List stored services (metadata only)
-```bash
-python main.py list
-```
-- Shows service names and usernames (no plaintext passwords).
+#### Security Features
+- Master password verification with 4-attempt limit
+- All passwords encrypted using Fernet (AES-128 + HMAC)
+- PBKDF2 key derivation with 100,000 iterations
+- Secure password input (hidden characters)
+- Local-only storage (no cloud dependencies)
 
 ### Configuration Files
 - `config.json`: master password hash and/or KDF metadata (salt, iterations). Never stores plaintext.
 - `data.json`: encrypted entries. Do not edit by hand.
 
-### Roadmap (Phased Plan)
-- **Phase 1: Core Foundation**
-  - Master password creation & verification
-  - Fernet encryption/decryption
-  - Add/retrieve entries, encrypted JSON storage
-- **Phase 2: Password Generation**
+### Roadmap (Future Enhancements)
+- **Phase 2: Password Generation** 🔄
   - Secure generator (length, symbols, numbers, case options)
   - Strength checker
   - Integrate into `add` flow
-- **Phase 3: Enhanced Features**
-  - List/search/filter
+- **Phase 3: Enhanced Features** 🔄
+  - Search/filter entries
   - Update/delete entries
   - Copy to clipboard
-- **Phase 4: Security & UX**
+- **Phase 4: Security & UX** 🔄
   - Auto-lock after inactivity
   - Expiry warnings
   - Encrypted import/export
   - Improved CLI UX and input validation
-- **Phase 5: Polish**
+- **Phase 5: Polish** 🔄
   - Colored output with `rich`
   - Help docs
   - Unit tests and CI
@@ -132,11 +121,13 @@ python main.py list
 ### Development Notes
 - Run with:
 ```bash
-python main.py --help
+python main.py
 ```
 - Follow the code style and keep variables descriptive.
 - Prefer early returns and minimal nesting.
 - Avoid catching exceptions without meaningful handling.
+- Uses PBKDF2 with SHA-256 and 100,000 iterations for key derivation
+- Fernet encryption provides authenticated encryption (AES-128 + HMAC)
 
 ### Troubleshooting
 - If `cryptography` fails to install, ensure build tools are present and Python is 64-bit.
