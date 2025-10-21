@@ -13,6 +13,13 @@
       "username": "toilet",
       "password": "gAAAAABo95fmv7uF6opKTEPiBkII_q-oqFETUkv-njwF8kc6eUrA6mlADOKFgMt1EMOBNhI9LxP8THDX2h41GByr7eoXkhWwtg==",
       "created": "25-10-21"
+    },
+    {
+      "id": 3,
+      "service": "test service 3",
+      "username": "ertert",
+      "password": "gAAAAABo96eCOTaTIMNPp7on9x79XJ9bHQOilkFxVIM0FYKvndUOhT8CS-Oj7UaWM5GWs8Gi8ovVyrnP6gjWRqgKYyFagzUV6g==",
+      "created": "25-10-21"
     }
   ]
 }

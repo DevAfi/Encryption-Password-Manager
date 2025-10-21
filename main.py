@@ -103,6 +103,7 @@ def get_password(master_pass: str) -> str:
 
 def main():
     print("Password Manager")
+    running = True
 
     stored_hash = load_master_password_hash()
 
@@ -112,14 +113,44 @@ def main():
     else:
         master_pass = login()
 
+    while running:
+        print("\n" + "="*40)
+        print("PASSWORD MANAGER MENU")
+        print("="*40)
+        print("1 - Add a new password")
+        print("2 - Retrieve a password")
+        print("3- Exit")
+
+        choice = int(input("\nEnter choice: "))
+
+        if choice < 1 or choice > 3:
+            print("Invalid choice")
+            return
+        
+
+        if choice == 1:
+                add_password(master_pass)
+        elif choice == 2:
+            get_password(master_pass)
+        else:
+            print("GOODBYE!")
+            running = False
+            return
+
+        """match choice:
+            case 1:
+                add_password(master_pass)
+            case 2:
+                get_password(master_pass)
+            case 3:
+                exit()"""
 
     
 
 
 
     print ("\nWelcome to the manager")
-    #add_password(master_pass)
-    get_password(master_pass)
+    
 
 if __name__ == "__main__":
     main()
