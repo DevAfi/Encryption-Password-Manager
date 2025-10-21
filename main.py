@@ -1,6 +1,6 @@
 import getpass
 from datetime import datetime
-from crypto import hash_password, verify_master_password, encrypt_pass
+from crypto import hash_password, verify_master_password, encrypt_pass, decrypt_pass
 from storage import save_master_password_hash, load_master_password_hash, load_entries, save_entries
 
 def setup_master_password():
@@ -72,6 +72,34 @@ def add_password(master_pass: str):
     print("\n!!! SUCCESS !!!")
     print("Password added for {site} successfully")
 
+def get_password(master_pass: str) -> str:
+    entries = load_entries()
+
+    if len(entries) < 1:
+        print("No entries available")
+        return
+    print("\nStored Services:")
+
+    #Iterates through all entries and displays them
+    for i, entry in enumerate(entries, 1):
+        print(f"{i}. {entry['service']} ({entry['username']})")
+
+    #Asks users choice and validates it
+    choice = int(input("\nEnter your choice here:   "))
+
+    if choice < 1 or choice > len(entries):
+        print("x Invalid choice")
+        return
+
+    selected = entries[choice-1]
+    decrypted_pass = decrypt_pass(selected['password'], master_pass)
+
+    print("\n==== INFORMATION ====")
+    print("ID:  ", selected['id'])
+    print("Service: ", selected['service'])
+    print("Username:    ", selected['username'])
+    print("Password:    ", decrypted_pass)
+
 
 def main():
     print("Password Manager")
@@ -91,6 +119,7 @@ def main():
 
     print ("\nWelcome to the manager")
     #add_password(master_pass)
+    get_password(master_pass)
 
 if __name__ == "__main__":
     main()
