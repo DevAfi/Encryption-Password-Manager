@@ -6,6 +6,13 @@
       "username": "test_use2r",
       "password": "encrypted_test_pass2",
       "created": "2025-10-20"
+    },
+    {
+      "id": 2,
+      "service": "skibidi",
+      "username": "toilet",
+      "password": "gAAAAABo95fmv7uF6opKTEPiBkII_q-oqFETUkv-njwF8kc6eUrA6mlADOKFgMt1EMOBNhI9LxP8THDX2h41GByr7eoXkhWwtg==",
+      "created": "25-10-21"
     }
   ]
 }

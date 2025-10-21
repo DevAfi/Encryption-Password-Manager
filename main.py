@@ -1,6 +1,7 @@
 import getpass
-from crypto import hash_password, verify_master_password
-from storage import save_master_password_hash, load_master_password_hash
+from datetime import datetime
+from crypto import hash_password, verify_master_password, encrypt_pass
+from storage import save_master_password_hash, load_master_password_hash, load_entries, save_entries
 
 def setup_master_password():
     print("\n==== FIRST TIME SETUP ====")
@@ -43,6 +44,34 @@ def login():
                 exit()
     return None
 
+def add_password(master_pass: str):
+    print("\n==== Add a new password ====")
+    site = input("Service name (e.g., YouTube, Gmail, GitHub):  ").strip()
+    username = input("Enter username/email: ").strip()
+    password = getpass.getpass("Password:   ")
+
+    if not site or not username or not password:
+        print("x All fields must be completed")
+        return
+    
+    encrypted_password = encrypt_pass(password, master_pass)
+
+    entries = load_entries()
+    next_id_num = len(entries)+1
+
+    new_entry = {
+        'id': next_id_num,
+        'service': site,
+        'username': username,
+        'password': encrypted_password,
+        'created': datetime.now().strftime('%y-%m-%d')
+    }
+
+    entries.append(new_entry)
+    save_entries(entries)
+    print("\n!!! SUCCESS !!!")
+    print("Password added for {site} successfully")
+
 
 def main():
     print("Password Manager")
@@ -61,6 +90,7 @@ def main():
 
 
     print ("\nWelcome to the manager")
+    #add_password(master_pass)
 
 if __name__ == "__main__":
     main()
