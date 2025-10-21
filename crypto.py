@@ -31,8 +31,13 @@ def encrypt_pass(norm_pass: str, master_pass: str) -> str:
     fernet = Fernet(key)
     encrypted = fernet.encrypt(norm_pass.encode())
     return encrypted.decode() #to store in json
+
 def decrypt_pass(enc_pass: str, master_pass: str) -> str:
     key = generatekey(master_pass)
     fernet = Fernet(key)
-    decrypted = fernet.decrypt(enc_pass.encode())
+    try:
+        decrypted = fernet.decrypt(enc_pass.encode())
+    except Exception as e:
+        print(f"Error decrypting password: {e}")
+        return
     return decrypted.decode() 
