@@ -64,6 +64,43 @@ def generate_password_menu():
 
 
 
+def search_for_service(master_pass):
+    entries = load_entries()
+
+    print("\n==== SEARCH FOR PASSWORD ====")
+
+
+    search_term = input("Enter a service name (E.G., git, youtube, gmail):  ").strip().lower()
+    matches = []
+
+    for entry in entries:
+        if search_term in entry['service'].strip().lower():
+            matches.append(entry)
+    
+    for i, entry in enumerate(matches, 1):
+        print(f"{i}. MATHCES {entry['service']} ({entry['username']})")
+    
+    choice = int(input("\nEnter your choice here:   "))
+
+    if choice < 1 or choice > len(matches):
+        print("x Invalid choice")
+        return
+
+    selected = matches[choice-1]
+    decrypted_pass = decrypt_pass(selected['password'], master_pass)
+
+    print("\n==== INFORMATION ====")
+    print("ID:  ", selected['id'])
+    print("Service: ", selected['service'])
+    print("Username:    ", selected['username'])
+    print("Password:    ", decrypted_pass)
+    
+
+
+
+
+
+
 def add_password(master_pass: str):
     print("\n==== Add a new password ====")
     site = input("Service name (e.g., YouTube, Gmail, GitHub):  ").strip()
@@ -106,6 +143,12 @@ def get_password(master_pass: str) -> str:
         print("No entries available")
         return
     print("\nStored Services:")
+
+    view_type = int(input("Search(1) or list all services(2)?   "))
+
+    if view_type == 1:
+        search_for_service(master_pass)
+        return
 
     #Iterates through all entries and displays them
     for i, entry in enumerate(entries, 1):
@@ -154,6 +197,7 @@ def delete_password() -> str:
         save_entries(entries)
 
 def update_password(master_pass: str):
+    """Updates password"""
     entries = load_entries()
 
     if len(entries) < 1:
