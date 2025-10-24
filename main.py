@@ -1,7 +1,8 @@
 import getpass
 from datetime import datetime
-from crypto import hash_password, verify_master_password, encrypt_pass, decrypt_pass
+from crypto import hash_password, verify_master_password, encrypt_pass, decrypt_pass, generate_password
 from storage import save_master_password_hash, load_master_password_hash, load_entries, save_entries
+import pyperclip
 
 def setup_master_password():
     print("\n==== FIRST TIME SETUP ====")
@@ -44,10 +45,36 @@ def login():
                 exit()
     return None
 
+def generate_password_menu():
+    """generate a password, menu to do that"""
+    print("\n==== GENERATE PASSWORD ====")
+
+    try:
+        length = int(input("Please enter a length (default = 16):       ") or 16)
+        use_symbols = input("Would you like to use symbols? (y/n, default = y):        ").lower() != "n"
+
+        password = generate_password(length, use_symbols)
+
+        print(f"\nGenerated password: {password}")
+        pyperclip.copy(password)
+        print("✓ Copied to clipboard!")
+        
+    except ValueError:
+        print("✗ Invalid length!")
+
+
+
 def add_password(master_pass: str):
     print("\n==== Add a new password ====")
     site = input("Service name (e.g., YouTube, Gmail, GitHub):  ").strip()
     username = input("Enter username/email: ").strip()
+
+    gen_pass = input("Generate password? Y/N:       ")
+
+
+    if gen_pass.lower() == "y":
+        generate_password_menu()
+
     password = getpass.getpass("Password:   ")
 
     if not site or not username or not password:

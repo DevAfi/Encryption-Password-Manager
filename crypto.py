@@ -5,6 +5,9 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 
+import secrets
+import string
+
 def hash_password(password: str) -> str:
     """ Hashes a password using SHA-256"""
     return hashlib.sha256(password.encode()).hexdigest()
@@ -36,3 +39,14 @@ def decrypt_pass(enc_pass: str, master_pass: str) -> str:
     fernet = Fernet(key)
     decrypted = fernet.decrypt(enc_pass.encode())
     return decrypted.decode() 
+
+
+
+def generate_password(length: int=16, use_symbols: bool=True) -> str:
+    """Generate a random password with the length given by the user"""
+    alphabet = string.ascii_lowercase + string.ascii_uppercase + string.digits
+    if use_symbols:
+        alphabet += string.punctuation
+
+    password = ''.join(secrets.choice(alphabet) for i in range(length))
+    return password
