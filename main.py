@@ -2,52 +2,8 @@ import getpass
 from datetime import datetime
 from crypto import hash_password, verify_master_password, encrypt_pass, decrypt_pass, generate_password
 from storage import save_master_password_hash, load_master_password_hash, load_entries, save_entries
+from password_analyzer import calculate_strength, display_strength_analysis, get_feedback
 import pyperclip
-import re
-
-
-
-
-
-def calculate_strength(password: str) -> dict:
-    score = 0
-
-    length = len(password)
-    if length >= 16:
-        score += 40
-    elif length >= 12:
-        score += 30
-    elif length >= 8:
-        score += 20
-    else:
-        score+= 10
-
-    if re.search(r'[a-z]', password):  # Has lowercase
-        score += 15
-    if re.search(r'[A-Z]', password):  # Has uppercase
-        score += 15
-    if re.search(r'[0-9]', password):  # Has numbers
-        score += 15
-    if re.search(r'[!@#$%^&*(),.?":{}|<>]', password):  # Has symbols
-        score += 15
-    
-    # Determine rating based on score
-    if score >= 80:
-        rating = 'very strong'
-    elif score >= 60:
-        rating = 'strong'
-    elif score >= 40:
-        rating = 'medium'
-    else:
-        rating = 'weak'
-    
-    return {
-        'score': score,
-        'rating': rating
-    }
-
-
-
 
 
 def setup_master_password():
@@ -101,7 +57,10 @@ def generate_password_menu():
 
         password = generate_password(length, use_symbols)
 
+        result = calculate_strength(password)
         print(f"\nGenerated password: {password}")
+        print(f"Strength: {result['rating'].upper()} ({result['score']}/100)")
+
         pyperclip.copy(password)
         print("✓ Copied to clipboard!")
         
@@ -145,9 +104,23 @@ def search_for_service(master_pass):
     print("Service: ", selected['service'])
     print("Username:    ", selected['username'])
     print("Password:    ", decrypted_pass)
-
+    
+    if 'strength' in selected:
+        print(f"Strength: {selected['strength'].upper()}")
+    
+    result = calculate_strength(decrypted_pass)
+    if result['score'] < 40 or result.get('is_common'):
+        print("\n⚠️  WARNING: This password is weak or commonly used!")
+        show_tips = input("Show improvement suggestions? (y/n): ").lower()
+        if show_tips == 'y':
+            feedback = get_feedback(decrypted_pass)
+            print("\nSuggestions:")
+            for item in feedback:
+                print(f"  {item}")
+    
     pyperclip.copy(decrypted_pass)
-    print("✓ Password copied to clipboard!")
+    print("\n✓ Password copied to clipboard!")
+
 
 
 
@@ -156,13 +129,52 @@ def add_password(master_pass: str):
     site = input("Service name (e.g., YouTube, Gmail, GitHub):  ").strip()
     username = input("Enter username/email: ").strip()
 
-    gen_pass = input("Generate password? Y/N:       ")
+    gen_pass = input("Generate password? (y/n): ").lower()
 
-
-    if gen_pass.lower() == "y":
-        generate_password_menu()
-
-    password = getpass.getpass("Password:   ")
+    if gen_pass == "y":
+        try:
+            length = int(input("Length (default 16): ") or 16)
+            use_symbols = input("Use symbols? (y/n, default y): ").lower() != "n"
+            password = generate_password(length, use_symbols)
+            
+            # Show generated password with strength
+            result = calculate_strength(password)
+            print(f"\nGenerated: {password}")
+            print(f"Strength: {result['rating'].upper()} ({result['score']}/100)")
+            pyperclip.copy(password)
+            print("✓ Copied to clipboard!")
+        except ValueError:
+            print("✗ Invalid length, using default")
+            password = generate_password()
+    else:
+        password = getpass.getpass("Password: ")
+        
+        # NEW: Analyze user's password
+        result = calculate_strength(password)
+        print(f"\nPassword strength: {result['rating'].upper()} ({result['score']}/100)")
+        
+        # Warn if common or weak
+        if result.get('is_common'):
+            print("⚠️  WARNING: This is a commonly used password!")
+            feedback = get_feedback(password)
+            print("\nSuggestions:")
+            for item in feedback:
+                print(f"  {item}")
+            confirm = input("\nSave anyway? (y/n): ").lower()
+            if confirm != 'y':
+                print("✗ Password not saved")
+                return
+        elif result['score'] < 40:
+            print("⚠️  This password is weak!")
+            show_tips = input("Show improvement tips? (y/n): ").lower()
+            if show_tips == 'y':
+                feedback = get_feedback(password)
+                for item in feedback:
+                    print(f"  {item}")
+            confirm = input("\nSave anyway? (y/n): ").lower()
+            if confirm != 'y':
+                print("✗ Password not saved")
+                return
 
     if not site or not username or not password:
         print("x All fields must be completed")
@@ -224,6 +236,24 @@ def get_password(master_pass: str) -> str:
     print("Service: ", selected['service'])
     print("Username:    ", selected['username'])
     print("Password:    ", decrypted_pass)
+
+    if 'strength' in selected:
+        print(f"Strength: {selected['strength'].upper()}")
+    
+    # NEW: Re-analyze and warn if weak
+    result = calculate_strength(decrypted_pass)
+    if result['score'] < 40 or result.get('is_common'):
+        print("\n⚠️  WARNING: This password is weak or commonly used!")
+        show_tips = input("Show improvement suggestions? (y/n): ").lower()
+        if show_tips == 'y':
+            feedback = get_feedback(decrypted_pass)
+            print("\nSuggestions:")
+            for item in feedback:
+                print(f"  {item}")
+    
+    # Copy to clipboard
+    pyperclip.copy(decrypted_pass)
+    print("\n✓ Password copied to clipboard!")
 
 def delete_password() -> str:
     entries = load_entries()
@@ -339,6 +369,23 @@ def update_password(master_pass: str):
     save_entries(entries)
     print(f"✓ Password for '{selected['service']}' updated successfully!")
 
+
+
+
+def analyze_password_standalone():
+    """Standalone password strength analyzer"""
+    print("\n==== PASSWORD STRENGTH ANALYZER ====")
+    password = getpass.getpass("Enter password to analyze: ")
+    
+    if not password:
+        print("✗ No password entered")
+        return
+    
+    display_strength_analysis(password)
+
+
+
+
 def main_menu(master_pass: str):
     running = True
     while running:
@@ -349,7 +396,8 @@ def main_menu(master_pass: str):
         print("2 - Retrieve a password")
         print("3 - Update a password")
         print("4 - Delete a password")
-        print("5- Exit")
+        print("5 - Analyze password strength")
+        print("6 - Exit")
 
         try:
             choice = int(input("\nEnter your choice here: "))
@@ -358,21 +406,25 @@ def main_menu(master_pass: str):
             return
 
 
-        if choice < 1 or choice > 5:
+        if choice < 1 or choice > 6:
             print("Invalid choice")
         
 
         if choice == 1:
-                add_password(master_pass)
+            add_password(master_pass)
         elif choice == 2:
             get_password(master_pass)
         elif choice == 3:
             update_password(master_pass)
         elif choice == 4:
             delete_password()
-        else:
+        elif choice == 5:
+            analyze_password_standalone()  # NEW
+        elif choice == 6:
             print("GOODBYE!")
             running = False
+        else:
+            print("✗ Invalid choice")
 
         """match choice:
             case 1:
@@ -384,7 +436,6 @@ def main_menu(master_pass: str):
 
 def main():
     print("Password Manager")
-    running = True
 
     stored_hash = load_master_password_hash()
 
