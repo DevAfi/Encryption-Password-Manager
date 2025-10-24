@@ -127,7 +127,33 @@ def get_password(master_pass: str) -> str:
     print("Username:    ", selected['username'])
     print("Password:    ", decrypted_pass)
 
-def delete_password(master_pass: str) -> str:
+def delete_password() -> str:
+    entries = load_entries()
+
+    if len(entries) < 1:
+        print("No entries available")
+        return
+    print("\nStored Services:")
+
+    #Iterates through all entries and displays them
+    for i, entry in enumerate(entries, 1):
+        print(f"{i}. {entry['service']} ({entry['username']})")
+
+    #Asks users choice and validates it
+    choice = int(input("\nEnter your choice here:   "))
+
+    if choice < 1 or choice > len(entries):
+        print("x Invalid choice")
+        return
+
+
+    confirm = input("\nCONFIRM DELETE (y/n):      ").lower()
+
+    if confirm == "y":
+        del entries[choice-1]
+        save_entries(entries)
+
+def update_password(master_pass: str):
     entries = load_entries()
 
     if len(entries) < 1:
@@ -147,15 +173,64 @@ def delete_password(master_pass: str) -> str:
         return
 
     selected = entries[choice-1]
+    decrypted_pass = decrypt_pass(selected['password'], master_pass)
 
+    print("\n==== INFORMATION ====")
+    print("ID:  ", selected['id'])
+    print("Service: ", selected['service'])
+    print("Username:    ", selected['username'])
+    print("Password:    ", decrypted_pass)
 
-    confirm = input("\nCONFIRM DELETE (y/n):      ").lower()
+    try:
+        update_choice = int(input("Would you like to change your password(1), username(2) or both(3)?  "))
+    except ValueError:
+        print("INVALID")
+        return
+    
+    new_username = selected['username']
+    new_password = selected['password']  # Keep encrypted
 
-    if confirm == "y":
-        del entries[choice-1]
-        save_entries(entries)
+    if update_choice == 1:
+        # Update password only
+        password = getpass.getpass("Enter new password: ")
+        if not password:
+            print("✗ Password cannot be empty")
+            return
+        new_password = encrypt_pass(password, master_pass)
+        
+    elif update_choice == 2:
+        # Update username only
+        username = input("Enter new username: ").strip()
+        if not username:
+            print("✗ Username cannot be empty")
+            return
+        new_username = username
+        
+    elif update_choice == 3:
+        # Update both
+        username = input("Enter new username: ").strip()
+        password = getpass.getpass("Enter new password: ")
+        if not username or not password:
+            print("✗ Fields cannot be empty")
+            return
+        new_username = username
+        new_password = encrypt_pass(password, master_pass)
+        
+    else:
+        print("✗ Invalid choice")
+        return
 
+    # Update the entry
+    entries[choice - 1] = {
+        'id': selected['id'],
+        'service': selected['service'],
+        'username': new_username,
+        'password': new_password,
+        'created': selected['created']
+    }
 
+    save_entries(entries)
+    print(f"✓ Password for '{selected['service']}' updated successfully!")
 
 def main_menu(master_pass: str):
     running = True
@@ -165,12 +240,13 @@ def main_menu(master_pass: str):
         print("="*40)
         print("1 - Add a new password")
         print("2 - Retrieve a password")
-        print("3 - Delete a password")
-        print("4- Exit")
+        print("3 - Update a password")
+        print("4 - Delete a password")
+        print("5- Exit")
 
         choice = int(input("\nEnter choice: "))
 
-        if choice < 1 or choice > 4:
+        if choice < 1 or choice > 5:
             print("Invalid choice")
         
 
@@ -179,7 +255,9 @@ def main_menu(master_pass: str):
         elif choice == 2:
             get_password(master_pass)
         elif choice == 3:
-            delete_password(master_pass)
+            update_password(master_pass)
+        elif choice == 4:
+            delete_password()
         else:
             print("GOODBYE!")
             running = False

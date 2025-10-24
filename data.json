@@ -1,17 +1,10 @@
 {
   "entries": [
     {
-      "id": 1,
-      "service": "1",
-      "username": "1",
-      "password": "gAAAAABo-uTZAXJIuSVbj7V085qmJuS0RC6I-pgLUpGrB06nPhGzwk6kzMWgWD9J4CWy4aw9OZ3jWERE23nbkOv1I9I8uk6kXvBsLYfJjRfHVrCF4zu6nB4=",
-      "created": "25-10-24"
-    },
-    {
       "id": 3,
       "service": "3",
-      "username": "3",
-      "password": "gAAAAABo-uT0_s1HgMXoDzx28acdtVbLuEZbwZlXzpSqEaU5EmhyFhFRFnANMM5BwbdpasO1Ffv-lBjCZdXnr7KZxHXbP4Jxr17tnF878LrWfghnqNtlDdFRX9EwUcUAPaUT9F7iK7gr",
+      "username": "123",
+      "password": "gAAAAABo-uslCqqZdi5gCjkccbL7RBHG0O7t4AjaLX89XIat6J3o4MdDgJiqCQDpLOQlEz6cxIfMRHeX9WQpQkYFyIA5LD88jQ==",
       "created": "25-10-24"
     }
   ]
