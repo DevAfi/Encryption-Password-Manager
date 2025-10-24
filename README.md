@@ -1,14 +1,20 @@
 ## Password Manager CLI
 
 ### Overview
-A minimal, local-first password manager you run from the terminal. Focused on a secure MVP:
+A comprehensive, local-first password manager you run from the terminal. Features include:
 - **Master password authentication**
 - **Add new password entries**
 - **Retrieve/view passwords**
+- **Search passwords by service**
+- **Update existing passwords**
+- **Delete password entries**
+- **Password generation with customizable options**
+- **Password strength analysis**
+- **Copy passwords to clipboard**
 - **Basic encryption**
 - **Local JSON storage**
 
-This repo also includes a roadmap for growing into a fuller CLI with generation, clipboard, search, update/delete, and backups.
+This repo includes a complete CLI with all essential password management features.
 
 ### Tech Stack
 - **Python**
@@ -18,10 +24,16 @@ This repo also includes a roadmap for growing into a fuller CLI with generation,
 - **hashlib/PBKDF2**: master password hashing/derivation
 - Optional: **pyperclip** for clipboard copy, **argparse/click** for CLI UX
 
-### Current Status (MVP) ✅ COMPLETED
+### Current Status ✅ FULLY FEATURED
 - ✅ Master password authentication with secure hashing
 - ✅ Add new password entries with encryption
 - ✅ Retrieve/view passwords with decryption
+- ✅ Search passwords by service name
+- ✅ Update existing password entries
+- ✅ Delete password entries
+- ✅ Password generation with customizable options
+- ✅ Password strength analysis and feedback
+- ✅ Copy passwords to clipboard
 - ✅ Local JSON storage with encrypted data
 - ✅ Interactive CLI menu system
 - ✅ Secure password input using getpass
@@ -31,9 +43,11 @@ This repo also includes a roadmap for growing into a fuller CLI with generation,
 password_manager/
   config.json           # stores master password hash (or KDF params)
   data.json             # encrypted entries (ciphertext + metadata)
-  crypto.py             # hashing and (soon) Fernet encryption helpers
+  crypto.py             # hashing and Fernet encryption helpers
   storage.py            # config and data file read/write helpers
-  main.py               # CLI entrypoint (commands: init, add, get, list ...)
+  password_analyzer.py  # password strength analysis and common password checking
+  common_passwords.txt  # list of common passwords for strength analysis
+  main.py               # CLI entrypoint with full feature set
   README.md
   venv/                 # local virtual environment (optional)
 ```
@@ -85,7 +99,12 @@ python main.py
 #### Main Menu Options
 1. **Add a new password** - Store encrypted credentials for any service
 2. **Retrieve a password** - View stored passwords by selecting from a list
-3. **Exit** - Close the application
+3. **Search passwords** - Find passwords by service name
+4. **Update password** - Modify existing password entries
+5. **Delete password** - Remove password entries
+6. **Generate password** - Create secure passwords with custom options
+7. **Analyze password strength** - Check password security and get feedback
+8. **Exit** - Close the application
 
 #### Security Features
 - Master password verification with 4-attempt limit
@@ -93,30 +112,25 @@ python main.py
 - PBKDF2 key derivation with 100,000 iterations
 - Secure password input (hidden characters)
 - Local-only storage (no cloud dependencies)
+- Password strength analysis against common passwords
+- Secure password generation with customizable parameters
 
 ### Configuration Files
 - `config.json`: master password hash and/or KDF metadata (salt, iterations). Never stores plaintext.
 - `data.json`: encrypted entries. Do not edit by hand.
+- `common_passwords.txt`: list of common passwords used for strength analysis (contains offensive content - see disclaimer below)
 
 ### Roadmap (Future Enhancements)
-- **Phase 2: Password Generation** 🔄
-  - Secure generator (length, symbols, numbers, case options)
-  - Strength checker
-  - Integrate into `add` flow
-- **Phase 3: Enhanced Features** 🔄
-  - Search/filter entries
-  - Update/delete entries
-  - Copy to clipboard
-- **Phase 4: Security & UX** 🔄
+- **Phase 2: Advanced Features** 🔄
   - Auto-lock after inactivity
-  - Expiry warnings
-  - Encrypted import/export
-  - Improved CLI UX and input validation
-- **Phase 5: Polish** 🔄
+  - Expiry warnings for passwords
+  - Encrypted import/export functionality
+- **Phase 3: Polish & UX** 🔄
   - Colored output with `rich`
-  - Help docs
+  - Help documentation
   - Unit tests and CI
   - README visuals (demo GIFs)
+  - Improved CLI UX and input validation
 
 ### Development Notes
 - Run with:
@@ -136,6 +150,10 @@ python main.py
 
 ### Backup & Restore (planned)
 - Add `backup`/`restore` commands to export/import an encrypted archive containing `config.json` + `data.json`.
+
+### ⚠️ Content Warning
+
+**Disclaimer**: The `common_passwords.txt` file contains passwords scraped from various web sources and includes offensive language, profanity, and slurs. This file is used solely for password strength analysis to help users avoid weak passwords. The offensive content is not endorsed by the project maintainers and is included only for security purposes. If you find this content inappropriate, you may delete or replace the file with a sanitized version.
 
 ### License
 MIT
