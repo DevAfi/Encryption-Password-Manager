@@ -127,6 +127,36 @@ def get_password(master_pass: str) -> str:
     print("Username:    ", selected['username'])
     print("Password:    ", decrypted_pass)
 
+def delete_password(master_pass: str) -> str:
+    entries = load_entries()
+
+    if len(entries) < 1:
+        print("No entries available")
+        return
+    print("\nStored Services:")
+
+    #Iterates through all entries and displays them
+    for i, entry in enumerate(entries, 1):
+        print(f"{i}. {entry['service']} ({entry['username']})")
+
+    #Asks users choice and validates it
+    choice = int(input("\nEnter your choice here:   "))
+
+    if choice < 1 or choice > len(entries):
+        print("x Invalid choice")
+        return
+
+    selected = entries[choice-1]
+
+
+    confirm = input("\nCONFIRM DELETE (y/n):      ").lower()
+
+    if confirm == "y":
+        del entries[choice-1]
+        save_entries(entries)
+
+
+
 def main_menu(master_pass: str):
     running = True
     while running:
@@ -135,11 +165,12 @@ def main_menu(master_pass: str):
         print("="*40)
         print("1 - Add a new password")
         print("2 - Retrieve a password")
-        print("3- Exit")
+        print("3 - Delete a password")
+        print("4- Exit")
 
         choice = int(input("\nEnter choice: "))
 
-        if choice < 1 or choice > 3:
+        if choice < 1 or choice > 4:
             print("Invalid choice")
         
 
@@ -147,6 +178,8 @@ def main_menu(master_pass: str):
                 add_password(master_pass)
         elif choice == 2:
             get_password(master_pass)
+        elif choice == 3:
+            delete_password(master_pass)
         else:
             print("GOODBYE!")
             running = False
