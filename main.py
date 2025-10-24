@@ -3,6 +3,52 @@ from datetime import datetime
 from crypto import hash_password, verify_master_password, encrypt_pass, decrypt_pass, generate_password
 from storage import save_master_password_hash, load_master_password_hash, load_entries, save_entries
 import pyperclip
+import re
+
+
+
+
+
+def calculate_strength(password: str) -> dict:
+    score = 0
+
+    length = len(password)
+    if length >= 16:
+        score += 40
+    elif length >= 12:
+        score += 30
+    elif length >= 8:
+        score += 20
+    else:
+        score+= 10
+
+    if re.search(r'[a-z]', password):  # Has lowercase
+        score += 15
+    if re.search(r'[A-Z]', password):  # Has uppercase
+        score += 15
+    if re.search(r'[0-9]', password):  # Has numbers
+        score += 15
+    if re.search(r'[!@#$%^&*(),.?":{}|<>]', password):  # Has symbols
+        score += 15
+    
+    # Determine rating based on score
+    if score >= 80:
+        rating = 'very strong'
+    elif score >= 60:
+        rating = 'strong'
+    elif score >= 40:
+        rating = 'medium'
+    else:
+        rating = 'weak'
+    
+    return {
+        'score': score,
+        'rating': rating
+    }
+
+
+
+
 
 def setup_master_password():
     print("\n==== FIRST TIME SETUP ====")
@@ -78,9 +124,14 @@ def search_for_service(master_pass):
             matches.append(entry)
     
     for i, entry in enumerate(matches, 1):
-        print(f"{i}. MATHCES {entry['service']} ({entry['username']})")
+        print(f"{i}. {entry['service']} ({entry['username']})")
     
-    choice = int(input("\nEnter your choice here:   "))
+    try:
+        choice = int(input("\nEnter your choice here: "))
+    except ValueError:
+        print("✗ Please enter a valid number")
+        return
+
 
     if choice < 1 or choice > len(matches):
         print("x Invalid choice")
@@ -94,10 +145,9 @@ def search_for_service(master_pass):
     print("Service: ", selected['service'])
     print("Username:    ", selected['username'])
     print("Password:    ", decrypted_pass)
-    
 
-
-
+    pyperclip.copy(decrypted_pass)
+    print("✓ Password copied to clipboard!")
 
 
 
@@ -128,7 +178,7 @@ def add_password(master_pass: str):
         'service': site,
         'username': username,
         'password': encrypted_password,
-        'created': datetime.now().strftime('%y-%m-%d')
+        'created': datetime.now().strftime('%Y-%m-%d')
     }
 
     entries.append(new_entry)
@@ -155,7 +205,12 @@ def get_password(master_pass: str) -> str:
         print(f"{i}. {entry['service']} ({entry['username']})")
 
     #Asks users choice and validates it
-    choice = int(input("\nEnter your choice here:   "))
+    try:
+        choice = int(input("\nEnter your choice here: "))
+    except ValueError:
+        print("✗ Please enter a valid number")
+        return
+
 
     if choice < 1 or choice > len(entries):
         print("x Invalid choice")
@@ -183,7 +238,11 @@ def delete_password() -> str:
         print(f"{i}. {entry['service']} ({entry['username']})")
 
     #Asks users choice and validates it
-    choice = int(input("\nEnter your choice here:   "))
+    try:
+        choice = int(input("\nEnter your choice here: "))
+    except ValueError:
+        print("✗ Please enter a valid number")
+        return
 
     if choice < 1 or choice > len(entries):
         print("x Invalid choice")
@@ -210,7 +269,11 @@ def update_password(master_pass: str):
         print(f"{i}. {entry['service']} ({entry['username']})")
 
     #Asks users choice and validates it
-    choice = int(input("\nEnter your choice here:   "))
+    try:
+        choice = int(input("\nEnter your choice here: "))
+    except ValueError:
+        print("✗ Please enter a valid number")
+        return
 
     if choice < 1 or choice > len(entries):
         print("x Invalid choice")
@@ -288,7 +351,12 @@ def main_menu(master_pass: str):
         print("4 - Delete a password")
         print("5- Exit")
 
-        choice = int(input("\nEnter choice: "))
+        try:
+            choice = int(input("\nEnter your choice here: "))
+        except ValueError:
+            print("✗ Please enter a valid number")
+            return
+
 
         if choice < 1 or choice > 5:
             print("Invalid choice")
