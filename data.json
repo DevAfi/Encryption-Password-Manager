@@ -1,53 +1,20 @@
 {
   "entries": [
     {
-      "id": 3,
-      "service": "3",
-      "username": "123",
-      "password": "gAAAAABo-uslCqqZdi5gCjkccbL7RBHG0O7t4AjaLX89XIat6J3o4MdDgJiqCQDpLOQlEz6cxIfMRHeX9WQpQkYFyIA5LD88jQ==",
-      "created": "25-10-24"
+      "id": 1,
+      "service": "GitHub",
+      "username": "Username1",
+      "password": "gAAAAABo_XNyM31mHnNB4l9uZZpGkvP1aZ3Syf5sa5BNBdTkPvds9ZBUSsNZwpQ3nM9hue-930UsjJ7G715Ow1FeY_hLQK-qmASyLIzzlVY-wlLeXlezu_k=",
+      "created": "2025-10-26",
+      "strength": "very strong"
     },
     {
       "id": 2,
-      "service": "1",
-      "username": "1",
-      "password": "gAAAAABo-u48_q1LF2j_7S06aK2mLjArmKIZIBxj2wipwNsxnfgSLkKiBZHGwZsHhrXyiK7gCU060y4zltPNbIupyfqwnforjA==",
-      "created": "25-10-24"
-    },
-    {
-      "id": 3,
-      "service": "2",
-      "username": "2",
-      "password": "gAAAAABo-u5DXONYi7bqVogiRS-6ei9ej_F7UXM18JPnKOXefpsojr5pNYTBGZ9-Tvbz_1ug9i4EgJDR0TFOxXWclDe7CDHdWw==",
-      "created": "25-10-24"
-    },
-    {
-      "id": 4,
-      "service": "123123",
-      "username": "123123",
-      "password": "gAAAAABo_VX4HPoSpIexFWvVyI5PrXSY_mk1OfujsknzwogG59v3U3PtikI25gcDIf06MBOqbCnMi8H38xYsLTVgBThiljXcIQ==",
-      "created": "25-10-24"
-    },
-    {
-      "id": 5,
-      "service": "gitHUB",
-      "username": "fonz",
-      "password": "gAAAAABo-voxUeEvQmU5Xvbz-4BX71DXRHMmpr3XfiIMdfEZDrhVD_L55K43LN61sObaxEshontWC2iGjekiRnqE9ih7xy60jk3VQYgrc1escfgE_fEqwwo=",
-      "created": "25-10-24"
-    },
-    {
-      "id": 6,
-      "service": "github",
-      "username": "fonz2",
-      "password": "gAAAAABo-u6glXE_JkcBojG0VYBsD3uOay1nbyiYGrS5flC-lGWwxN0kJb711KJHzWLJ_e0ZSYPZptkfyqLRUOBSNIqiT91WGg==",
-      "created": "25-10-24"
-    },
-    {
-      "id": 7,
-      "service": "asdasd",
-      "username": "asdasdads",
-      "password": "gAAAAABo_VA03oPCiqfx8yj9hSIugMj8sPcoD7m_0rSI5DESjmPmbojMa380xLqDMqF0Q2wGZ4pe2pgcnH6usZEjdWWovdxzbA==",
-      "created": "2025-10-25"
+      "service": "Monster",
+      "username": "Username3",
+      "password": "gAAAAABo_XX3ikUjCfVttErg2Vx6zPy7FbbP3zFU2hzsFBI8Q8YQIpU-9eD-hNjKAP1bRP2Iaw1V9lo7aKd6hHAOm2SMZF9FeSGA_qPiCyriZpA5K0xpVcEDapyNy1hICdKzxFbJqMtoKSr3pYS1_Kn-ipy6qIJj8DVBti7ODZRdXu0obPKasJzwqWM1HqLIumU5aQ2lIjFU1dGj9pM9wmmJf2rWAKIB3Q==",
+      "created": "2025-10-26",
+      "strength": "very strong"
     }
   ]
 }
